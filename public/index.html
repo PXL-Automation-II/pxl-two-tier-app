@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="/css/style.css" />
   </head>
   <body>
-    <div class="container" id="dashboardView">
+    <div class="container">
       <header>
         <div class="brand">
           <h1>PXL Automation II - Two-Tier Cloud Dashboard</h1>
@@ -28,106 +28,108 @@
         </div>
       </header>
 
-      <div class="grid">
-        <div class="card">
-          <div class="card-title">Instance Hostname</div>
-          <div class="card-value" id="hostname">Loading...</div>
-          <div class="card-subtitle">Serving EC2 Node</div>
+      <div id="mainDashboardView">
+        <div class="grid">
+          <div class="card">
+            <div class="card-title">Instance Hostname</div>
+            <div class="card-value" id="hostname">Loading...</div>
+            <div class="card-subtitle">Serving EC2 Node</div>
+          </div>
+          <div class="card">
+            <div class="card-title">Availability Zone</div>
+            <div class="card-value" id="availabilityZone">Loading...</div>
+            <div class="card-subtitle">AWS Multi-AZ Placement</div>
+          </div>
+          <div class="card">
+            <div class="card-title">Private IP Address</div>
+            <div class="card-value" id="ipAddress">Loading...</div>
+            <div class="card-subtitle">Internal Subnet IP</div>
+          </div>
+          <div class="card">
+            <div class="card-title">Traffic Handled</div>
+            <div class="card-value" id="requestsServed">Loading...</div>
+            <div class="card-subtitle">Load Balancer Requests</div>
+          </div>
+          <div class="card">
+            <div class="card-title">Database Target</div>
+            <div class="card-value" id="dbEndpoint">Loading...</div>
+            <div class="card-subtitle" id="dbDatabaseName">Target DB</div>
+          </div>
+          <div class="card">
+            <div class="card-title">Server Resources</div>
+            <div class="card-value" id="memoryUsage">Loading...</div>
+            <div class="card-subtitle" id="uptime">Uptime</div>
+          </div>
         </div>
+
         <div class="card">
-          <div class="card-title">Availability Zone</div>
-          <div class="card-value" id="availabilityZone">Loading...</div>
-          <div class="card-subtitle">AWS Multi-AZ Placement</div>
-        </div>
-        <div class="card">
-          <div class="card-title">Private IP Address</div>
-          <div class="card-value" id="ipAddress">Loading...</div>
-          <div class="card-subtitle">Internal Subnet IP</div>
-        </div>
-        <div class="card">
-          <div class="card-title">Traffic Handled</div>
-          <div class="card-value" id="requestsServed">Loading...</div>
-          <div class="card-subtitle">Load Balancer Requests</div>
-        </div>
-        <div class="card">
-          <div class="card-title">Database Target</div>
-          <div class="card-value" id="dbEndpoint">Loading...</div>
-          <div class="card-subtitle" id="dbDatabaseName">Target DB</div>
-        </div>
-        <div class="card">
-          <div class="card-title">Server Resources</div>
-          <div class="card-value" id="memoryUsage">Loading...</div>
-          <div class="card-subtitle" id="uptime">Uptime</div>
+          <div class="section-title">
+            <span>Persistent Database Records</span>
+            <button id="refreshBtn" class="btn btn-secondary">Refresh</button>
+          </div>
+
+          <form id="contactForm" class="form-group">
+            <input type="text" id="nameInput" placeholder="Full Name" maxlength="100" required />
+            <input
+              type="email"
+              id="emailInput"
+              placeholder="Email Address"
+              maxlength="100"
+              required
+            />
+            <input
+              type="text"
+              id="departmentInput"
+              placeholder="Department (e.g. Cloud Ops)"
+              maxlength="100"
+            />
+            <button type="submit" class="btn btn-primary">Add Record</button>
+          </form>
+
+          <div id="formError" class="form-error hidden"></div>
+
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Department</th>
+                <th>Created</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="contactsBody">
+              <tr>
+                <td colspan="6" class="text-center text-muted">Loading contacts...</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
 
-      <div class="card">
-        <div class="section-title">
-          <span>Persistent Database Records</span>
-          <button id="refreshBtn" class="btn btn-secondary">Refresh</button>
+      <div id="gameView" class="game-view hidden">
+        <div class="game-view-content">
+          <p class="game-message">
+            Database connection successful. Congrats. Here's a
+            <a href="#" id="gameLink" class="game-link">game</a>.
+          </p>
+          <div id="gameBox" class="game-box hidden">
+            <iframe
+              id="gameFrame"
+              class="game-frame"
+              src="about:blank"
+              title="CoolCave Game"
+              tabindex="0"
+            ></iframe>
+          </div>
+          <div class="game-controls">
+            <button id="backBtn" class="btn btn-secondary" type="button">Back</button>
+          </div>
         </div>
-
-        <form id="contactForm" class="form-group">
-          <input type="text" id="nameInput" placeholder="Full Name" maxlength="100" required />
-          <input
-            type="email"
-            id="emailInput"
-            placeholder="Email Address"
-            maxlength="100"
-            required
-          />
-          <input
-            type="text"
-            id="departmentInput"
-            placeholder="Department (e.g. Cloud Ops)"
-            maxlength="100"
-          />
-          <button type="submit" class="btn btn-primary">Add Record</button>
-        </form>
-
-        <div id="formError" class="form-error hidden"></div>
-
-        <table>
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Name</th>
-              <th>Email</th>
-              <th>Department</th>
-              <th>Created</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody id="contactsBody">
-            <tr>
-              <td colspan="6" class="text-center text-muted">Loading contacts...</td>
-            </tr>
-          </tbody>
-        </table>
       </div>
 
       <footer>PXL Digital</footer>
-    </div>
-
-    <div id="gameView" class="game-view hidden">
-      <div class="game-view-content">
-        <p class="game-message">
-          Database connection successful. Congrats. Here's a
-          <a href="#" id="gameLink" class="game-link">game</a>.
-        </p>
-        <div id="gameBox" class="game-box hidden">
-          <iframe
-            id="gameFrame"
-            class="game-frame"
-            src=""
-            title="CoolCave Game"
-            tabindex="0"
-          ></iframe>
-        </div>
-        <div class="game-controls">
-          <button id="backBtn" class="btn btn-secondary" type="button">Back</button>
-        </div>
-      </div>
     </div>
 
     <div

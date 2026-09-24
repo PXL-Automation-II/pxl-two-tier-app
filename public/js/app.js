@@ -40,7 +40,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const diagBanner = document.getElementById('diagBanner');
 
   // Secret game elements
-  const dashboardView = document.getElementById('dashboardView');
+  const mainDashboardView = document.getElementById('mainDashboardView');
   const gameView = document.getElementById('gameView');
   const gameLink = document.getElementById('gameLink');
   const gameBox = document.getElementById('gameBox');
@@ -51,8 +51,8 @@ document.addEventListener('DOMContentLoaded', () => {
   let latestDbDiagnostics = null;
 
   function showGameView() {
-    if (dashboardView) {
-      dashboardView.classList.add('hidden');
+    if (mainDashboardView) {
+      mainDashboardView.classList.add('hidden');
     }
     if (gameView) {
       gameView.classList.remove('hidden');
@@ -61,7 +61,7 @@ document.addEventListener('DOMContentLoaded', () => {
       gameBox.classList.add('hidden');
     }
     if (gameFrame) {
-      gameFrame.src = '';
+      gameFrame.src = 'about:blank';
     }
   }
 
@@ -73,10 +73,11 @@ document.addEventListener('DOMContentLoaded', () => {
       gameBox.classList.add('hidden');
     }
     if (gameFrame) {
-      gameFrame.src = '';
+      // Unload completely so game loop, requestAnimationFrame, and audio stop immediately
+      gameFrame.src = 'about:blank';
     }
-    if (dashboardView) {
-      dashboardView.classList.remove('hidden');
+    if (mainDashboardView) {
+      mainDashboardView.classList.remove('hidden');
     }
   }
 
@@ -434,6 +435,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Database status button interaction
   dbBadge.addEventListener('click', async () => {
+    // If the game view is currently open, clicking the green button navigates back to the dashboard
+    if (gameView && !gameView.classList.contains('hidden')) {
+      showDashboardView();
+      return;
+    }
+
     // Quickly check live connection on press to guarantee fresh, non-stale state
     await checkLiveDatabaseConnection();
 
