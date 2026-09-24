@@ -60,7 +60,14 @@ pxl-two-tier-app/
 │   │   └── logger.js
 │   └── app.js
 ├── tests/
-│   └── app.test.js
+│   ├── e2e/
+│   │   └── workflow.test.js
+│   ├── integration/
+│   │   └── api.test.js
+│   └── unit/
+│       ├── env.test.js
+│       ├── service.test.js
+│       └── validation.test.js
 ├── .env.example
 ├── .gitattributes
 ├── .gitignore
@@ -74,19 +81,22 @@ pxl-two-tier-app/
 
 ## Available npm Scripts
 
-| Command                | Action                                                             |
-| :--------------------- | :----------------------------------------------------------------- |
-| `npm start`            | Starts the Express server in production mode                       |
-| `npm run dev`          | Starts the server in watch mode with automatic reloads             |
-| `npm run build`        | Validates syntax, linting, and formatting                          |
-| `npm test`             | Runs the automated test suite using the native Node.js test runner |
-| `npm run test:watch`   | Runs tests continuously in watch mode                              |
-| `npm run lint`         | Analyzes code for errors using ESLint                              |
-| `npm run lint:fix`     | Automatically fixes autofixable ESLint issues                      |
-| `npm run format`       | Formats all code using Prettier                                    |
-| `npm run format:check` | Verifies code conforms to Prettier style rules                     |
-| `npm run db:check`     | CLI diagnostic tool testing TCP and MySQL connectivity             |
-| `npm run ci`           | Full pipeline check (lint, format verification, and tests)         |
+| Command                    | Action                                                         |
+| :------------------------- | :------------------------------------------------------------- |
+| `npm start`                | Starts the Express server in production mode                   |
+| `npm run dev`              | Starts the server in watch mode with automatic reloads         |
+| `npm run build`            | Validates syntax, linting, and formatting                      |
+| `npm test`                 | Runs the entire test suite (unit, integration, and e2e)        |
+| `npm run test:unit`        | Runs isolated unit tests (config, validation, services)        |
+| `npm run test:integration` | Runs integration tests against Express HTTP endpoints          |
+| `npm run test:e2e`         | Runs end-to-end client lifecycle and outage recovery tests     |
+| `npm run test:watch`       | Runs all tests continuously in watch mode                      |
+| `npm run lint`             | Analyzes code for errors using ESLint                          |
+| `npm run lint:fix`         | Automatically fixes autofixable ESLint issues                  |
+| `npm run format`           | Formats all code using Prettier                                |
+| `npm run format:check`     | Verifies code conforms to Prettier style rules                 |
+| `npm run db:check`         | CLI diagnostic tool testing TCP and MySQL connectivity         |
+| `npm run ci`               | Full pipeline check (lint, format verification, and all tests) |
 
 ## Local Usage
 

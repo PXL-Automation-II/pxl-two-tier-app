@@ -28,15 +28,22 @@ function getPool() {
   return pool;
 }
 
+function setPool(customPool) {
+  pool = customPool;
+}
+
 async function closePool() {
   if (pool) {
     logger.info('Closing database connection pool...');
-    await pool.end();
+    if (typeof pool.end === 'function') {
+      await pool.end();
+    }
     pool = null;
   }
 }
 
 module.exports = {
   getPool,
+  setPool,
   closePool
 };
