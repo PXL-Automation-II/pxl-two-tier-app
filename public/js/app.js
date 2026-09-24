@@ -321,12 +321,65 @@ document.addEventListener('DOMContentLoaded', () => {
     fetchContacts();
   });
 
+  let isCheckingLiveStatus = false;
+
+  async function checkLiveDatabaseConnection() {
+    if (isCheckingLiveStatus) return latestDbDiagnostics;
+    isCheckingLiveStatus = true;
+    dbBadge.classList.add('checking');
+    dbBadgeText.textContent = 'Database: Checking...';
+
+    try {
+      const res = await fetch('/api/diagnostics/ping', { method: 'POST' });
+      const diag = await res.json();
+      latestDbDiagnostics = diag;
+      isDbConnected = Boolean(diag.connected);
+
+      if (isDbConnected) {
+        dbBadge.className = 'badge badge-success';
+        const latency =
+          diag.latencyMs !== null && diag.latencyMs !== undefined ? ` (${diag.latencyMs}ms)` : '';
+        dbBadgeText.textContent = `Database: Connected${latency}`;
+        dbBadge.title = 'Database connected.';
+      } else {
+        dbBadge.className = 'badge badge-danger';
+        dbBadgeText.textContent = 'Database: Disconnected';
+        dbBadge.title = 'Database disconnected. Click to open diagnostics.';
+      }
+
+      renderDiagnostics(diag);
+      return diag;
+    } catch (err) {
+      isDbConnected = false;
+      dbBadge.className = 'badge badge-danger';
+      dbBadgeText.textContent = 'Database: Connection Failed';
+      dbBadge.title = 'Database connection failed. Click to open diagnostics.';
+      latestDbDiagnostics = {
+        connected: false,
+        status: 'disconnected',
+        lastChecked: new Date().toISOString(),
+        error: err.message || 'Network request failed',
+        errorCode: 'NETWORK_ERROR',
+        target: latestDbDiagnostics?.target
+      };
+      renderDiagnostics(latestDbDiagnostics);
+      return latestDbDiagnostics;
+    } finally {
+      isCheckingLiveStatus = false;
+      dbBadge.classList.remove('checking');
+    }
+  }
+
   // Database status button interaction
-  dbBadge.addEventListener('click', () => {
+  dbBadge.addEventListener('click', async () => {
+    // Quickly check live connection on press to guarantee fresh, non-stale state
+    await checkLiveDatabaseConnection();
+
     if (!isDbConnected) {
       openDebugModal();
     } else {
       // Button is green: secret tiny little JavaScript game to be hooked up later
+      console.log('Database connected: secret game trigger (pending layout)');
     }
   });
 

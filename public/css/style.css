@@ -107,6 +107,11 @@ button.badge:focus-visible {
   outline-offset: 2px;
 }
 
+button.badge.checking {
+  opacity: 0.85;
+  cursor: wait;
+}
+
 .badge-success {
   background: var(--success-bg);
   color: #4ade80;

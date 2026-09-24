@@ -44,12 +44,29 @@ async function ensureSchema() {
   }
 }
 
-async function pingDatabase() {
+async function pingDatabase(timeoutMs = 2000) {
   const pool = getPool();
   const start = Date.now();
   state.lastChecked = new Date().toISOString();
+
+  let timer = null;
+  const timeoutPromise = new Promise((_, reject) => {
+    timer = setTimeout(() => {
+      const timeoutErr = new Error(`Database connection timed out after ${timeoutMs}ms`);
+      timeoutErr.code = 'ETIMEDOUT';
+      reject(timeoutErr);
+    }, timeoutMs);
+  });
+
   try {
-    const [versionRows] = await pool.query('SELECT VERSION() AS version');
+    const queryPromise = (async () => {
+      const [versionRows] = await pool.query('SELECT VERSION() AS version');
+      return versionRows;
+    })();
+
+    const versionRows = await Promise.race([queryPromise, timeoutPromise]);
+    if (timer) clearTimeout(timer);
+
     state.latencyMs = Date.now() - start;
     state.isConnected = true;
     state.lastError = null;
@@ -74,6 +91,7 @@ async function pingDatabase() {
 
     return true;
   } catch (err) {
+    if (timer) clearTimeout(timer);
     state.isConnected = false;
     state.lastError = err.message || 'Unknown database connection error';
     state.errorCode = err.code || 'ERR_CONNECTION_FAILED';
