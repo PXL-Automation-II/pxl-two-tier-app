@@ -10,6 +10,14 @@ const app = express();
 // Security: disable X-Powered-By header
 app.disable('x-powered-by');
 
+// Request counting middleware for load-balancing observability
+let totalRequests = 0;
+app.use((req, res, next) => {
+  totalRequests++;
+  next();
+});
+app.getRequestsCount = () => totalRequests;
+
 // Security headers middleware
 app.use((req, res, next) => {
   res.setHeader('X-Content-Type-Options', 'nosniff');

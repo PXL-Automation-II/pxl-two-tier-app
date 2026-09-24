@@ -1,11 +1,28 @@
 const { describe, it, before, after } = require('node:test');
 const assert = require('node:assert');
 const app = require('../../src/app');
+const { setPool } = require('../../src/config/db');
 
 let server;
 let baseUrl;
 
 before((_, done) => {
+  const mockPool = {
+    async query(sql) {
+      if (typeof sql === 'string' && sql.includes('SELECT VERSION()')) {
+        return [[{ version: '8.0.46' }]];
+      }
+      if (typeof sql === 'string' && sql.includes('CREATE TABLE')) {
+        return [{}];
+      }
+      if (typeof sql === 'string' && sql.includes('SELECT COUNT(*)')) {
+        return [[{ total: 0 }]];
+      }
+      return [[]];
+    }
+  };
+  setPool(mockPool);
+
   server = app.listen(0, '127.0.0.1', () => {
     baseUrl = `http://127.0.0.1:${server.address().port}`;
     done();
@@ -48,6 +65,25 @@ describe('Integration: API & HTTP Layer', () => {
       assert.ok(body.server.platform);
       assert.strictEqual(typeof body.server.uptimeSeconds, 'number');
       assert.strictEqual(body.environment.dbPort, 3306);
+    });
+  });
+
+  describe('GET & POST /api/diagnostics', () => {
+    it('returns database diagnostics and target configuration', async () => {
+      const res = await fetch(`${baseUrl}/api/diagnostics`);
+      assert.strictEqual(res.status, 200);
+      const body = await res.json();
+      assert.ok(['connected', 'disconnected'].includes(body.status));
+      assert.ok(body.target);
+      assert.strictEqual(body.target.port, 3306);
+    });
+
+    it('triggers manual ping on POST /api/diagnostics/ping', async () => {
+      const res = await fetch(`${baseUrl}/api/diagnostics/ping`, { method: 'POST' });
+      assert.strictEqual(res.status, 200);
+      const body = await res.json();
+      assert.ok(['connected', 'disconnected'].includes(body.status));
+      assert.ok(body.target);
     });
   });
 

@@ -2,6 +2,7 @@ const app = require('./src/app');
 const env = require('./src/config/env');
 const { closePool } = require('./src/config/db');
 const contactService = require('./src/services/contactService');
+const { resolveAwsMetadata } = require('./src/utils/imds');
 const logger = require('./src/utils/logger');
 
 let server = null;
@@ -22,6 +23,13 @@ async function monitorDatabaseConnection() {
 server = app.listen(env.PORT, '0.0.0.0', () => {
   logger.info(`PXL Two-Tier Web Application listening on port ${env.PORT}`);
   logger.info(`Environment: Database target ${env.DB_HOST}:${env.DB_PORT}/${env.DB_NAME}`);
+
+  // Resolve AWS EC2 metadata in background
+  resolveAwsMetadata()
+    .then((aws) => {
+      logger.info(`Placement: Availability Zone ${aws.availabilityZone} (isAws: ${aws.isAws})`);
+    })
+    .catch(() => {});
 
   // Kick off background database connection
   monitorDatabaseConnection().catch((err) => {

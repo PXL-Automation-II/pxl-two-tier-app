@@ -1,6 +1,7 @@
 const os = require('os');
 const env = require('../config/env');
 const contactService = require('../services/contactService');
+const { getCachedAwsMetadata } = require('../utils/imds');
 
 function getServerMetadata() {
   const interfaces = os.networkInterfaces();
@@ -13,12 +14,27 @@ function getServerMetadata() {
     }
   }
 
+  const awsMeta = getCachedAwsMetadata();
+  const totalMemMb = Math.round(os.totalmem() / 1024 / 1024);
+  const freeMemMb = Math.round(os.freemem() / 1024 / 1024);
+  const usedMemMb = Math.max(0, totalMemMb - freeMemMb);
+  const usedMemPercent = totalMemMb > 0 ? Math.round((usedMemMb / totalMemMb) * 100) : 0;
+
   return {
     hostname: os.hostname(),
+    instanceId: awsMeta.instanceId || os.hostname(),
+    availabilityZone: awsMeta.availabilityZone,
+    isAws: awsMeta.isAws,
     ipAddresses: ipAddresses.length > 0 ? ipAddresses : ['127.0.0.1'],
     uptimeSeconds: Math.floor(process.uptime()),
     nodeVersion: process.version,
-    platform: `${os.type()} ${os.release()}`
+    platform: `${os.type()} ${os.release()}`,
+    memory: {
+      totalMb: totalMemMb,
+      usedMb: usedMemMb,
+      freeMb: freeMemMb,
+      usedPercent: usedMemPercent
+    }
   };
 }
 
@@ -33,6 +49,7 @@ function getHealth(req, res) {
     dbLatencyMs: dbState.latencyMs,
     server: {
       hostname: meta.hostname,
+      availabilityZone: meta.availabilityZone,
       ip: meta.ipAddresses[0],
       uptime: meta.uptimeSeconds
     }
@@ -49,6 +66,7 @@ function getHealth(req, res) {
 function getInfo(req, res) {
   const meta = getServerMetadata();
   const dbState = contactService.getDatabaseState();
+  const requestsServed = req.app.getRequestsCount ? req.app.getRequestsCount() : 1;
 
   res.json({
     app: 'PXL Two-Tier Cloud Web Application',
@@ -60,7 +78,10 @@ function getInfo(req, res) {
       dbName: env.DB_NAME,
       dbUser: env.DB_USER
     },
-    server: meta,
+    server: {
+      ...meta,
+      requestsServed
+    },
     database: {
       host: env.DB_HOST,
       port: env.DB_PORT,
@@ -71,7 +92,53 @@ function getInfo(req, res) {
   });
 }
 
+function getDiagnostics(req, res) {
+  const dbState = contactService.getDatabaseState();
+  const isConnected = dbState.isConnected;
+  res.json({
+    connected: isConnected,
+    status: isConnected ? 'connected' : 'disconnected',
+    lastChecked: dbState.lastChecked,
+    latencyMs: dbState.latencyMs,
+    version: dbState.version,
+    recordCount: dbState.recordCount,
+    error: dbState.lastError,
+    errorCode: dbState.errorCode,
+    target: {
+      host: env.DB_HOST,
+      port: env.DB_PORT,
+      database: env.DB_NAME,
+      user: env.DB_USER,
+      connectTimeoutMs: env.DB_CONNECT_TIMEOUT
+    }
+  });
+}
+
+async function postDiagnosticsPing(req, res) {
+  const connected = await contactService.pingDatabase();
+  const dbState = contactService.getDatabaseState();
+  res.json({
+    connected,
+    status: connected ? 'connected' : 'disconnected',
+    lastChecked: dbState.lastChecked,
+    latencyMs: dbState.latencyMs,
+    version: dbState.version,
+    recordCount: dbState.recordCount,
+    error: dbState.lastError,
+    errorCode: dbState.errorCode,
+    target: {
+      host: env.DB_HOST,
+      port: env.DB_PORT,
+      database: env.DB_NAME,
+      user: env.DB_USER,
+      connectTimeoutMs: env.DB_CONNECT_TIMEOUT
+    }
+  });
+}
+
 module.exports = {
   getHealth,
-  getInfo
+  getInfo,
+  getDiagnostics,
+  postDiagnosticsPing
 };

@@ -35,6 +35,7 @@ module.exports = [
       globals: {
         document: 'readonly',
         window: 'readonly',
+        navigator: 'readonly',
         fetch: 'readonly',
         alert: 'readonly',
         confirm: 'readonly'
