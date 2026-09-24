@@ -52,31 +52,3 @@ npm start
 ```
 The server will be available at http://localhost:3000.
 
-## User Data Example (Ubuntu EC2)
-
-```bash
-#!/bin/bash
-set -e
-
-apt-get update -y
-apt-get install -y curl git
-curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
-apt-get install -y nodejs
-
-cd /opt
-git clone https://github.com/PXL-Automation-II/pxl-two-tier-app.git app
-cd /opt/app
-
-npm ci --omit=dev
-
-cat <<EOF > /etc/pxl-app.env
-PORT=3000
-DB_HOST=${db_private_ip}
-DB_PORT=3306
-DB_USER=${db_user}
-DB_PASSWORD=${db_password}
-DB_NAME=${db_name}
-EOF
-
-node server.js &
-```
