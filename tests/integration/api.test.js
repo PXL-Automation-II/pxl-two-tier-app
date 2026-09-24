@@ -53,6 +53,31 @@ describe('Integration: API & HTTP Layer', () => {
     });
   });
 
+  describe('GET /live and /livez (Liveness Probe)', () => {
+    it('returns 200 alive regardless of database status for process survival', async () => {
+      const res = await fetch(`${baseUrl}/live`);
+      assert.strictEqual(res.status, 200);
+      const body = await res.json();
+      assert.strictEqual(body.status, 'alive');
+      assert.strictEqual(typeof body.uptimeSeconds, 'number');
+
+      const aliasRes = await fetch(`${baseUrl}/livez`);
+      assert.strictEqual(aliasRes.status, 200);
+    });
+  });
+
+  describe('GET /ready and /readyz (Readiness Probe)', () => {
+    it('returns readiness status based on database availability', async () => {
+      const res = await fetch(`${baseUrl}/ready`);
+      assert.ok([200, 503].includes(res.status));
+      const body = await res.json();
+      assert.ok(['ready', 'not_ready'].includes(body.status));
+
+      const aliasRes = await fetch(`${baseUrl}/readyz`);
+      assert.strictEqual(aliasRes.status, res.status);
+    });
+  });
+
   describe('GET /api/info', () => {
     it('returns server environment, host architecture, and database state', async () => {
       const res = await fetch(`${baseUrl}/api/info`);

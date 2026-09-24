@@ -64,6 +64,45 @@ function getHealth(req, res) {
   return res.status(200).json(payload);
 }
 
+function getLiveness(req, res) {
+  const meta = getServerMetadata();
+  return res.status(200).json({
+    status: 'alive',
+    timestamp: new Date().toISOString(),
+    uptimeSeconds: meta.uptimeSeconds,
+    hostname: meta.hostname
+  });
+}
+
+function getReadiness(req, res) {
+  const meta = getServerMetadata();
+  const dbState = contactService.getDatabaseState();
+
+  if (!dbState.isConnected) {
+    return res.status(503).json({
+      status: 'not_ready',
+      timestamp: new Date().toISOString(),
+      error: 'Database connection unavailable',
+      errorCode: dbState.errorCode || 'ERR_DATABASE_DISCONNECTED',
+      server: {
+        hostname: meta.hostname,
+        uptime: meta.uptimeSeconds
+      }
+    });
+  }
+
+  return res.status(200).json({
+    status: 'ready',
+    timestamp: new Date().toISOString(),
+    database: 'connected',
+    latencyMs: dbState.latencyMs,
+    server: {
+      hostname: meta.hostname,
+      uptime: meta.uptimeSeconds
+    }
+  });
+}
+
 function getInfo(req, res) {
   const meta = getServerMetadata();
   const dbState = contactService.getDatabaseState();
@@ -139,6 +178,8 @@ async function postDiagnosticsPing(req, res) {
 
 module.exports = {
   getHealth,
+  getLiveness,
+  getReadiness,
   getInfo,
   getDiagnostics,
   postDiagnosticsPing

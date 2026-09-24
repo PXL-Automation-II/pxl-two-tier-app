@@ -25,18 +25,20 @@ Node.js Express web application and REST API for the PXL Automation II course ev
 | `DB_CONNECT_TIMEOUT`    | `5000`                   | Database connection timeout in milliseconds             |
 | `HEALTH_CHECK_INTERVAL` | `10000`                  | Database health monitoring interval in milliseconds     |
 
-## Endpoints
+## Endpoints & Observability
 
-| Method   | Endpoint                | Description                                                               |
-| :------- | :---------------------- | :------------------------------------------------------------------------ |
-| `GET`    | `/`                     | Web dashboard                                                             |
-| `GET`    | `/health`               | Health check for ALB Target Groups                                        |
-| `GET`    | `/api/info`             | Server and database metadata (JSON)                                       |
-| `GET`    | `/api/diagnostics`      | Real-time database connectivity and configuration diagnostics             |
-| `POST`   | `/api/diagnostics/ping` | On-demand live connectivity probe and latency verification                |
-| `GET`    | `/api/contacts`         | List all contacts                                                         |
-| `POST`   | `/api/contacts`         | Create a contact (`{"name": "...", "email": "...", "department": "..."}`) |
-| `DELETE` | `/api/contacts/:id`     | Delete a contact by ID                                                    |
+| Method   | Endpoint                | Purpose                                                                   | Status Codes  |
+| :------- | :---------------------- | :------------------------------------------------------------------------ | :------------ |
+| `GET`    | `/`                     | Web dashboard                                                             | 200           |
+| `GET`    | `/live`, `/livez`       | Liveness probe: verifies process execution (no DB dependency)             | 200           |
+| `GET`    | `/ready`, `/readyz`     | Readiness probe: verifies readiness to accept traffic (with DB)           | 200, 503      |
+| `GET`    | `/health`               | Comprehensive health report for backward compatibility                    | 200, 503      |
+| `GET`    | `/api/info`             | Server, placement, memory, and database metadata                          | 200           |
+| `GET`    | `/api/diagnostics`      | Real-time database connectivity and configuration diagnostics             | 200           |
+| `POST`   | `/api/diagnostics/ping` | On-demand live connectivity probe and latency verification                | 200           |
+| `GET`    | `/api/contacts`         | List all contacts                                                         | 200, 503      |
+| `POST`   | `/api/contacts`         | Create a contact (`{"name": "...", "email": "...", "department": "..."}`) | 201, 400, 503 |
+| `DELETE` | `/api/contacts/:id`     | Delete a contact by ID                                                    | 200, 404, 503 |
 
 ## Project Structure
 
