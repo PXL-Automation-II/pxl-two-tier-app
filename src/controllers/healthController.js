@@ -39,7 +39,7 @@ function getHealth(req, res) {
   };
 
   if (!dbState.isConnected) {
-    payload.error = dbState.lastError || 'Database connection unavailable';
+    payload.error = 'Database connection unavailable';
     return res.status(503).json(payload);
   }
 

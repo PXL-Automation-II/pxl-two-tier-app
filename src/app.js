@@ -10,8 +10,21 @@ const app = express();
 // Security: disable X-Powered-By header
 app.disable('x-powered-by');
 
-// Middlewares
-app.use(cors());
+// Security headers middleware
+app.use((req, res, next) => {
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('X-Frame-Options', 'SAMEORIGIN');
+  res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+  next();
+});
+
+// Configurable CORS (defaults to wildcard for friction-free student lab access)
+const allowedOrigins = process.env.CORS_ORIGIN || '*';
+app.use(
+  cors({
+    origin: allowedOrigins === '*' ? '*' : allowedOrigins.split(',').map((o) => o.trim())
+  })
+);
 app.use(express.json({ limit: '100kb' }));
 
 // Serve static frontend dashboard assets

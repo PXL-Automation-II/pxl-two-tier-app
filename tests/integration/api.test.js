@@ -111,4 +111,14 @@ describe('Integration: API & HTTP Layer', () => {
       assert.ok(body.error.includes('positive integer'));
     });
   });
+
+  describe('HTTP Defensive Security Headers', () => {
+    it('sets protective security headers on responses', async () => {
+      const res = await fetch(`${baseUrl}/health`);
+      assert.strictEqual(res.headers.get('x-content-type-options'), 'nosniff');
+      assert.strictEqual(res.headers.get('x-frame-options'), 'SAMEORIGIN');
+      assert.strictEqual(res.headers.get('referrer-policy'), 'strict-origin-when-cross-origin');
+      assert.strictEqual(res.headers.get('x-powered-by'), null);
+    });
+  });
 });

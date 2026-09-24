@@ -10,9 +10,7 @@ async function getContacts(req, res) {
   } catch (err) {
     const dbState = contactService.getDatabaseState();
     if (!dbState.isConnected) {
-      return res
-        .status(503)
-        .json({ error: 'Database service unavailable', details: dbState.lastError });
+      return res.status(503).json({ error: 'Database service unavailable' });
     }
     logger.error('Error fetching contacts:', err.message);
     res.status(500).json({ error: 'Internal server error while fetching contacts' });
@@ -55,9 +53,7 @@ async function addContact(req, res) {
   } catch (err) {
     const dbState = contactService.getDatabaseState();
     if (!dbState.isConnected) {
-      return res
-        .status(503)
-        .json({ error: 'Database service unavailable', details: dbState.lastError });
+      return res.status(503).json({ error: 'Database service unavailable' });
     }
     logger.error('Error creating contact:', err.message);
     res.status(500).json({ error: 'Internal server error while creating contact' });
@@ -79,9 +75,7 @@ async function removeContact(req, res) {
   } catch (err) {
     const dbState = contactService.getDatabaseState();
     if (!dbState.isConnected) {
-      return res
-        .status(503)
-        .json({ error: 'Database service unavailable', details: dbState.lastError });
+      return res.status(503).json({ error: 'Database service unavailable' });
     }
     logger.error('Error deleting contact:', err.message);
     res.status(500).json({ error: 'Internal server error while deleting contact' });
