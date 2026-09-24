@@ -42,50 +42,10 @@ Node.js Express web application and REST API for the PXL Automation II course ev
 
 ## Project Structure
 
-```text
-pxl-two-tier-app/
-|-- public/
-|   |-- css/
-|   |   \-- style.css
-|   |-- js/
-|   |   \-- app.js
-|   \-- index.html
-|-- scripts/
-|   \-- db-check.js
-|-- src/
-|   |-- config/
-|   |   |-- db.js
-|   |   \-- env.js
-|   |-- controllers/
-|   |   |-- contactController.js
-|   |   \-- healthController.js
-|   |-- routes/
-|   |   |-- apiRoutes.js
-|   |   \-- healthRoutes.js
-|   |-- services/
-|   |   \-- contactService.js
-|   |-- utils/
-|   |   \-- logger.js
-|   \-- app.js
-|-- tests/
-|   |-- e2e/
-|   |   \-- workflow.test.js
-|   |-- integration/
-|   |   \-- api.test.js
-|   \-- unit/
-|       |-- env.test.js
-|       |-- service.test.js
-|       \-- validation.test.js
-|-- .env.example
-|-- .gitattributes
-|-- .gitignore
-|-- .prettierignore
-|-- .prettierrc
-|-- eslint.config.js
-|-- package.json
-|-- README.md
-\-- server.js
-```
+- `public/`: Web dashboard frontend assets (HTML, CSS, JavaScript)
+- `src/`: Express application (controllers, routes, services, config)
+- `tests/`: Automated test suites (unit, integration, e2e)
+- `server.js`: Server lifecycle and HTTP entrypoint
 
 ## Available npm Scripts
 
