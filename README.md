@@ -36,47 +36,47 @@ Node.js Express web application and REST API for the PXL Automation II course ev
 
 ```text
 pxl-two-tier-app/
-├── public/
-│   ├── css/
-│   │   └── style.css
-│   ├── js/
-│   │   └── app.js
-│   └── index.html
-├── scripts/
-│   └── db-check.js
-├── src/
-│   ├── config/
-│   │   ├── db.js
-│   │   └── env.js
-│   ├── controllers/
-│   │   ├── contactController.js
-│   │   └── healthController.js
-│   ├── routes/
-│   │   ├── apiRoutes.js
-│   │   └── healthRoutes.js
-│   ├── services/
-│   │   └── contactService.js
-│   ├── utils/
-│   │   └── logger.js
-│   └── app.js
-├── tests/
-│   ├── e2e/
-│   │   └── workflow.test.js
-│   ├── integration/
-│   │   └── api.test.js
-│   └── unit/
-│       ├── env.test.js
-│       ├── service.test.js
-│       └── validation.test.js
-├── .env.example
-├── .gitattributes
-├── .gitignore
-├── .prettierignore
-├── .prettierrc
-├── eslint.config.js
-├── package.json
-├── README.md
-└── server.js
+|-- public/
+|   |-- css/
+|   |   \-- style.css
+|   |-- js/
+|   |   \-- app.js
+|   \-- index.html
+|-- scripts/
+|   \-- db-check.js
+|-- src/
+|   |-- config/
+|   |   |-- db.js
+|   |   \-- env.js
+|   |-- controllers/
+|   |   |-- contactController.js
+|   |   \-- healthController.js
+|   |-- routes/
+|   |   |-- apiRoutes.js
+|   |   \-- healthRoutes.js
+|   |-- services/
+|   |   \-- contactService.js
+|   |-- utils/
+|   |   \-- logger.js
+|   \-- app.js
+|-- tests/
+|   |-- e2e/
+|   |   \-- workflow.test.js
+|   |-- integration/
+|   |   \-- api.test.js
+|   \-- unit/
+|       |-- env.test.js
+|       |-- service.test.js
+|       \-- validation.test.js
+|-- .env.example
+|-- .gitattributes
+|-- .gitignore
+|-- .prettierignore
+|-- .prettierrc
+|-- eslint.config.js
+|-- package.json
+|-- README.md
+\-- server.js
 ```
 
 ## Available npm Scripts

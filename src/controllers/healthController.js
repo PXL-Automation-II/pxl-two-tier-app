@@ -61,7 +61,13 @@ function getInfo(req, res) {
       dbUser: env.DB_USER
     },
     server: meta,
-    database: dbState
+    database: {
+      host: env.DB_HOST,
+      port: env.DB_PORT,
+      name: env.DB_NAME,
+      connected: dbState.isConnected,
+      ...dbState
+    }
   });
 }
 

@@ -36,18 +36,24 @@ document.addEventListener('DOMContentLoaded', () => {
         runtimeVersionElem.textContent = `Node.js ${data.server.nodeVersion}`;
       }
 
-      if (data.database) {
-        dbEndpointElem.textContent = `${data.database.host}:${data.database.port}`;
-        dbDatabaseNameElem.textContent = `Target: ${data.database.name}`;
+      const dbHost = data.environment?.dbHost || data.database?.host || '127.0.0.1';
+      const dbPort = data.environment?.dbPort || data.database?.port || 3306;
+      const dbName = data.environment?.dbName || data.database?.name || 'pxldb';
 
-        if (data.database.connected) {
-          dbBadge.className = 'badge badge-success';
-          const latency = data.database.latencyMs !== null ? ` (${data.database.latencyMs}ms)` : '';
-          dbBadgeText.textContent = `Database: Connected${latency}`;
-        } else {
-          dbBadge.className = 'badge badge-danger';
-          dbBadgeText.textContent = 'Database: Disconnected';
-        }
+      dbEndpointElem.textContent = `${dbHost}:${dbPort}`;
+      dbDatabaseNameElem.textContent = `Target: ${dbName}`;
+
+      const isConnected = data.database?.isConnected ?? data.database?.connected ?? false;
+      if (isConnected) {
+        dbBadge.className = 'badge badge-success';
+        const latency =
+          data.database?.latencyMs !== null && data.database?.latencyMs !== undefined
+            ? ` (${data.database.latencyMs}ms)`
+            : '';
+        dbBadgeText.textContent = `Database: Connected${latency}`;
+      } else {
+        dbBadge.className = 'badge badge-danger';
+        dbBadgeText.textContent = 'Database: Disconnected';
       }
     } catch {
       dbBadge.className = 'badge badge-danger';
