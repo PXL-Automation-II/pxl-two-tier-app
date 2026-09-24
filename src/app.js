@@ -1,0 +1,38 @@
+const express = require('express');
+const cors = require('cors');
+const path = require('path');
+const healthRoutes = require('./routes/healthRoutes');
+const apiRoutes = require('./routes/apiRoutes');
+const logger = require('./utils/logger');
+
+const app = express();
+
+// Security: disable X-Powered-By header
+app.disable('x-powered-by');
+
+// Middlewares
+app.use(cors());
+app.use(express.json({ limit: '100kb' }));
+
+// Serve static frontend dashboard assets
+app.use(express.static(path.join(__dirname, '../public')));
+
+// Mount routes
+app.use('/', healthRoutes);
+app.use('/api', apiRoutes);
+
+// 404 handler for unmatched API routes
+app.use('/api/*', (req, res) => {
+  res.status(404).json({ error: `Route ${req.method} ${req.originalUrl} not found` });
+});
+
+// Global error handler
+app.use((err, req, res, next) => {
+  if (err instanceof SyntaxError && err.status === 400 && 'body' in err) {
+    return res.status(400).json({ error: 'Malformed JSON in request body' });
+  }
+  logger.error('Unhandled request error:', err.message);
+  res.status(500).json({ error: 'Internal server error' });
+});
+
+module.exports = app;

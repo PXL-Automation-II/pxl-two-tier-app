@@ -32,6 +32,37 @@ Node.js Express web application and REST API for the PXL Automation II course ev
 | `POST` | `/api/contacts` | Create a contact (`{"name": "...", "email": "...", "department": "..."}`) |
 | `DELETE`| `/api/contacts/:id` | Delete a contact by ID |
 
+## Project Structure
+
+```text
+pxl-two-tier-app/
+├── public/
+│   ├── css/
+│   │   └── style.css
+│   ├── js/
+│   │   └── app.js
+│   └── index.html
+├── src/
+│   ├── config/
+│   │   ├── db.js
+│   │   └── env.js
+│   ├── controllers/
+│   │   ├── contactController.js
+│   │   └── healthController.js
+│   ├── routes/
+│   │   ├── apiRoutes.js
+│   │   └── healthRoutes.js
+│   ├── services/
+│   │   └── contactService.js
+│   └── app.js
+├── .env.example
+├── .gitattributes
+├── .gitignore
+├── package.json
+├── README.md
+└── server.js
+```
+
 ## Local Usage
 
 ### Installation
@@ -51,4 +82,3 @@ cp .env.example .env
 npm start
 ```
 The server will be available at http://localhost:3000.
-
