@@ -1,86 +1,97 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PXL Automation II — Two-Tier Cloud Dashboard</title>
-  <link rel="stylesheet" href="/css/style.css">
-</head>
-<body>
-  <div class="container">
-    <header>
-      <div class="brand">
-        <h1>PXL Automation II — Two-Tier Cloud Dashboard</h1>
-        <p>Declarative Infrastructure as Code Deployment with Terraform</p>
-      </div>
-      <div>
-        <span id="dbBadge" class="badge badge-pending">
-          <span class="badge-dot"></span>
-          <span id="dbBadgeText">Database: Checking...</span>
-        </span>
-      </div>
-    </header>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PXL Automation II — Two-Tier Cloud Dashboard</title>
+    <link rel="stylesheet" href="/css/style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <div class="brand">
+          <h1>PXL Automation II — Two-Tier Cloud Dashboard</h1>
+          <p>Declarative Infrastructure as Code Deployment with Terraform</p>
+        </div>
+        <div>
+          <span id="dbBadge" class="badge badge-pending">
+            <span class="badge-dot"></span>
+            <span id="dbBadgeText">Database: Checking...</span>
+          </span>
+        </div>
+      </header>
 
-    <div class="grid">
-      <div class="card">
-        <div class="card-title">Instance Hostname</div>
-        <div class="card-value" id="hostname">Loading...</div>
-        <div class="card-subtitle">Serving EC2 Node</div>
+      <div class="grid">
+        <div class="card">
+          <div class="card-title">Instance Hostname</div>
+          <div class="card-value" id="hostname">Loading...</div>
+          <div class="card-subtitle">Serving EC2 Node</div>
+        </div>
+        <div class="card">
+          <div class="card-title">Private IP Address</div>
+          <div class="card-value" id="ipAddress">Loading...</div>
+          <div class="card-subtitle">Internal Subnet IP</div>
+        </div>
+        <div class="card">
+          <div class="card-title">Database Target</div>
+          <div class="card-value" id="dbEndpoint">Loading...</div>
+          <div class="card-subtitle" id="dbDatabaseName">Target DB</div>
+        </div>
+        <div class="card">
+          <div class="card-title">Server Uptime</div>
+          <div class="card-value" id="uptime">Loading...</div>
+          <div class="card-subtitle" id="runtimeVersion">Node.js</div>
+        </div>
       </div>
+
       <div class="card">
-        <div class="card-title">Private IP Address</div>
-        <div class="card-value" id="ipAddress">Loading...</div>
-        <div class="card-subtitle">Internal Subnet IP</div>
+        <div class="section-title">
+          <span>Persistent Database Records</span>
+          <button id="refreshBtn" class="btn btn-secondary">Refresh</button>
+        </div>
+
+        <form id="contactForm" class="form-group">
+          <input type="text" id="nameInput" placeholder="Full Name" maxlength="100" required />
+          <input
+            type="email"
+            id="emailInput"
+            placeholder="Email Address"
+            maxlength="100"
+            required
+          />
+          <input
+            type="text"
+            id="departmentInput"
+            placeholder="Department (e.g. Cloud Ops)"
+            maxlength="100"
+          />
+          <button type="submit" class="btn btn-primary">Add Record</button>
+        </form>
+
+        <div id="formError" class="form-error hidden"></div>
+
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Department</th>
+              <th>Created</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="contactsBody">
+            <tr>
+              <td colspan="6" class="text-center text-muted">Loading contacts...</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
-      <div class="card">
-        <div class="card-title">Database Target</div>
-        <div class="card-value" id="dbEndpoint">Loading...</div>
-        <div class="card-subtitle" id="dbDatabaseName">Target DB</div>
-      </div>
-      <div class="card">
-        <div class="card-title">Server Uptime</div>
-        <div class="card-value" id="uptime">Loading...</div>
-        <div class="card-subtitle" id="runtimeVersion">Node.js</div>
-      </div>
+
+      <footer>PXL Digital • Automation II • AWS & Terraform Evaluation Assignment (PE1)</footer>
     </div>
 
-    <div class="card">
-      <div class="section-title">
-        <span>Persistent Database Records</span>
-        <button id="refreshBtn" class="btn btn-secondary">Refresh</button>
-      </div>
-
-      <form id="contactForm" class="form-group">
-        <input type="text" id="nameInput" placeholder="Full Name" maxlength="100" required />
-        <input type="email" id="emailInput" placeholder="Email Address" maxlength="100" required />
-        <input type="text" id="departmentInput" placeholder="Department (e.g. Cloud Ops)" maxlength="100" />
-        <button type="submit" class="btn btn-primary">Add Record</button>
-      </form>
-
-      <div id="formError" class="form-error hidden"></div>
-
-      <table>
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Department</th>
-            <th>Created</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody id="contactsBody">
-          <tr><td colspan="6" class="text-center text-muted">Loading contacts...</td></tr>
-        </tbody>
-      </table>
-    </div>
-
-    <footer>
-      PXL Digital • Automation II • AWS & Terraform Evaluation Assignment (PE1)
-    </footer>
-  </div>
-
-  <script src="/js/app.js"></script>
-</body>
+    <script src="/js/app.js"></script>
+  </body>
 </html>

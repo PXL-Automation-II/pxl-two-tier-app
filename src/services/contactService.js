@@ -67,7 +67,9 @@ async function getAllContacts() {
     throw new Error('Database is currently unavailable');
   }
   const pool = getPool();
-  const [rows] = await pool.query('SELECT id, name, email, department, created_at FROM contacts ORDER BY created_at DESC');
+  const [rows] = await pool.query(
+    'SELECT id, name, email, department, created_at FROM contacts ORDER BY created_at DESC'
+  );
   return rows;
 }
 

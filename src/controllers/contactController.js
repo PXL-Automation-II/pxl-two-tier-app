@@ -10,7 +10,9 @@ async function getContacts(req, res) {
   } catch (err) {
     const dbState = contactService.getDatabaseState();
     if (!dbState.isConnected) {
-      return res.status(503).json({ error: 'Database service unavailable', details: dbState.lastError });
+      return res
+        .status(503)
+        .json({ error: 'Database service unavailable', details: dbState.lastError });
     }
     logger.error('Error fetching contacts:', err.message);
     res.status(500).json({ error: 'Internal server error while fetching contacts' });
@@ -21,14 +23,18 @@ async function addContact(req, res) {
   const { name, email, department } = req.body;
 
   if (!name || typeof name !== 'string' || name.trim().length === 0) {
-    return res.status(400).json({ error: 'Field "name" is required and must be a non-empty string' });
+    return res
+      .status(400)
+      .json({ error: 'Field "name" is required and must be a non-empty string' });
   }
   if (name.trim().length > 100) {
     return res.status(400).json({ error: 'Field "name" cannot exceed 100 characters' });
   }
 
   if (!email || typeof email !== 'string' || !EMAIL_REGEX.test(email.trim())) {
-    return res.status(400).json({ error: 'Field "email" is required and must be a valid email address' });
+    return res
+      .status(400)
+      .json({ error: 'Field "email" is required and must be a valid email address' });
   }
   if (email.trim().length > 100) {
     return res.status(400).json({ error: 'Field "email" cannot exceed 100 characters' });
@@ -49,7 +55,9 @@ async function addContact(req, res) {
   } catch (err) {
     const dbState = contactService.getDatabaseState();
     if (!dbState.isConnected) {
-      return res.status(503).json({ error: 'Database service unavailable', details: dbState.lastError });
+      return res
+        .status(503)
+        .json({ error: 'Database service unavailable', details: dbState.lastError });
     }
     logger.error('Error creating contact:', err.message);
     res.status(500).json({ error: 'Internal server error while creating contact' });
@@ -71,7 +79,9 @@ async function removeContact(req, res) {
   } catch (err) {
     const dbState = contactService.getDatabaseState();
     if (!dbState.isConnected) {
-      return res.status(503).json({ error: 'Database service unavailable', details: dbState.lastError });
+      return res
+        .status(503)
+        .json({ error: 'Database service unavailable', details: dbState.lastError });
     }
     logger.error('Error deleting contact:', err.message);
     res.status(500).json({ error: 'Internal server error while deleting contact' });

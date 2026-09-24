@@ -6,7 +6,9 @@ let pool = null;
 
 function getPool() {
   if (!pool) {
-    logger.info(`Initializing MySQL connection pool for ${env.DB_HOST}:${env.DB_PORT}/${env.DB_NAME}...`);
+    logger.info(
+      `Initializing MySQL connection pool for ${env.DB_HOST}:${env.DB_PORT}/${env.DB_NAME}...`
+    );
     pool = mysql.createPool({
       host: env.DB_HOST,
       port: env.DB_PORT,

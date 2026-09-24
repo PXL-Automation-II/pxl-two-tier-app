@@ -29,8 +29,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
       if (data.server) {
         hostnameElem.textContent = data.server.hostname || 'Unknown';
-        ipAddressElem.textContent = Array.isArray(data.server.ipAddresses) 
-          ? data.server.ipAddresses.join(', ') 
+        ipAddressElem.textContent = Array.isArray(data.server.ipAddresses)
+          ? data.server.ipAddresses.join(', ')
           : '127.0.0.1';
         uptimeElem.textContent = `${data.server.uptimeSeconds}s`;
         runtimeVersionElem.textContent = `Node.js ${data.server.nodeVersion}`;
@@ -49,7 +49,7 @@ document.addEventListener('DOMContentLoaded', () => {
           dbBadgeText.textContent = 'Database: Disconnected';
         }
       }
-    } catch (err) {
+    } catch {
       dbBadge.className = 'badge badge-danger';
       dbBadgeText.textContent = 'Database: Connection Failed';
     }
@@ -104,8 +104,8 @@ document.addEventListener('DOMContentLoaded', () => {
         deptCell.textContent = contact.department;
 
         const dateCell = document.createElement('td');
-        dateCell.textContent = contact.created_at 
-          ? new Date(contact.created_at).toLocaleString() 
+        dateCell.textContent = contact.created_at
+          ? new Date(contact.created_at).toLocaleString()
           : 'N/A';
 
         const actionCell = document.createElement('td');
@@ -124,7 +124,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         contactsBody.appendChild(row);
       });
-    } catch (err) {
+    } catch {
       contactsBody.innerHTML = '';
       const row = document.createElement('tr');
       const cell = document.createElement('td');
@@ -165,7 +165,7 @@ document.addEventListener('DOMContentLoaded', () => {
       contactForm.reset();
       await fetchContacts();
       await fetchServerInfo();
-    } catch (err) {
+    } catch {
       showError('Network error while saving contact');
     }
   }
@@ -184,7 +184,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       await fetchContacts();
       await fetchServerInfo();
-    } catch (err) {
+    } catch {
       alert('Network error while deleting contact');
     }
   }

@@ -11,7 +11,7 @@ let isShuttingDown = false;
 // Background Database Connection & Health Loop
 async function monitorDatabaseConnection() {
   await contactService.pingDatabase();
-  
+
   healthCheckTimer = setInterval(async () => {
     if (isShuttingDown) return;
     await contactService.pingDatabase();
@@ -22,7 +22,7 @@ async function monitorDatabaseConnection() {
 server = app.listen(env.PORT, '0.0.0.0', () => {
   logger.info(`PXL Two-Tier Web Application listening on port ${env.PORT}`);
   logger.info(`Environment: Database target ${env.DB_HOST}:${env.DB_PORT}/${env.DB_NAME}`);
-  
+
   // Kick off background database connection
   monitorDatabaseConnection().catch((err) => {
     logger.error('Initial database monitoring error:', err.message);
