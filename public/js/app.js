@@ -39,8 +39,60 @@ document.addEventListener('DOMContentLoaded', () => {
   const diagRaw = document.getElementById('diagRaw');
   const diagBanner = document.getElementById('diagBanner');
 
+  // Secret game elements
+  const dashboardView = document.getElementById('dashboardView');
+  const gameView = document.getElementById('gameView');
+  const gameLink = document.getElementById('gameLink');
+  const gameBox = document.getElementById('gameBox');
+  const gameFrame = document.getElementById('gameFrame');
+  const backBtn = document.getElementById('backBtn');
+
   let isDbConnected = false;
   let latestDbDiagnostics = null;
+
+  function showGameView() {
+    if (dashboardView) {
+      dashboardView.classList.add('hidden');
+    }
+    if (gameView) {
+      gameView.classList.remove('hidden');
+    }
+    if (gameBox) {
+      gameBox.classList.add('hidden');
+    }
+    if (gameFrame) {
+      gameFrame.src = '';
+    }
+  }
+
+  function showDashboardView() {
+    if (gameView) {
+      gameView.classList.add('hidden');
+    }
+    if (gameBox) {
+      gameBox.classList.add('hidden');
+    }
+    if (gameFrame) {
+      gameFrame.src = '';
+    }
+    if (dashboardView) {
+      dashboardView.classList.remove('hidden');
+    }
+  }
+
+  function openGame() {
+    if (gameBox && gameFrame) {
+      gameBox.classList.remove('hidden');
+      if (
+        !gameFrame.src ||
+        gameFrame.src === 'about:blank' ||
+        !gameFrame.src.includes('coolcave')
+      ) {
+        gameFrame.src = '/coolcave/index.html';
+      }
+      gameFrame.focus();
+    }
+  }
 
   function showError(msg) {
     if (!msg) {
@@ -388,10 +440,22 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!isDbConnected) {
       openDebugModal();
     } else {
-      // Button is green: secret tiny little JavaScript game to be hooked up later
-      console.log('Database connected: secret game trigger (pending layout)');
+      showGameView();
     }
   });
+
+  if (gameLink) {
+    gameLink.addEventListener('click', (e) => {
+      e.preventDefault();
+      openGame();
+    });
+  }
+
+  if (backBtn) {
+    backBtn.addEventListener('click', () => {
+      showDashboardView();
+    });
+  }
 
   if (closeDebugModalBtn) {
     closeDebugModalBtn.addEventListener('click', closeDebugModal);
@@ -409,8 +473,12 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && debugModal && !debugModal.classList.contains('hidden')) {
-      closeDebugModal();
+    if (e.key === 'Escape') {
+      if (debugModal && !debugModal.classList.contains('hidden')) {
+        closeDebugModal();
+      } else if (gameView && !gameView.classList.contains('hidden')) {
+        showDashboardView();
+      }
     }
   });
 

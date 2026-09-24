@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="/css/style.css" />
   </head>
   <body>
-    <div class="container">
+    <div class="container" id="dashboardView">
       <header>
         <div class="brand">
           <h1>PXL Automation II - Two-Tier Cloud Dashboard</h1>
@@ -107,6 +107,27 @@
       </div>
 
       <footer>PXL Digital</footer>
+    </div>
+
+    <div id="gameView" class="game-view hidden">
+      <div class="game-view-content">
+        <p class="game-message">
+          Database connection successful. Congrats. Here's a
+          <a href="#" id="gameLink" class="game-link">game</a>.
+        </p>
+        <div id="gameBox" class="game-box hidden">
+          <iframe
+            id="gameFrame"
+            class="game-frame"
+            src=""
+            title="CoolCave Game"
+            tabindex="0"
+          ></iframe>
+        </div>
+        <div class="game-controls">
+          <button id="backBtn" class="btn btn-secondary" type="button">Back</button>
+        </div>
+      </div>
     </div>
 
     <div
