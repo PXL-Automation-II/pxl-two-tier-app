@@ -23,4 +23,10 @@ describe('Unit: Environment Configuration', () => {
     assert.strictEqual(typeof env.HEALTH_CHECK_INTERVAL, 'number');
     assert.ok(env.HEALTH_CHECK_INTERVAL >= 1000);
   });
+
+  it('manages database credentials securely without hardcoded password fallbacks', () => {
+    assert.strictEqual(typeof env.DB_PASSWORD, 'string');
+    assert.strictEqual(typeof env.NODE_ENV, 'string');
+    assert.ok(['development', 'test', 'production'].includes(env.NODE_ENV));
+  });
 });

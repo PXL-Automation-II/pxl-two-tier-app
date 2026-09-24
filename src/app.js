@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
+const CONSTANTS = require('./config/constants');
 const healthRoutes = require('./routes/healthRoutes');
 const apiRoutes = require('./routes/apiRoutes');
 const logger = require('./utils/logger');
@@ -27,13 +28,13 @@ app.use((req, res, next) => {
 });
 
 // Configurable CORS (defaults to wildcard for friction-free student lab access)
-const allowedOrigins = process.env.CORS_ORIGIN || '*';
+const allowedOrigins = process.env.CORS_ORIGIN || CONSTANTS.SERVER.DEFAULT_CORS_ORIGIN;
 app.use(
   cors({
     origin: allowedOrigins === '*' ? '*' : allowedOrigins.split(',').map((o) => o.trim())
   })
 );
-app.use(express.json({ limit: '100kb' }));
+app.use(express.json({ limit: CONSTANTS.SERVER.JSON_BODY_LIMIT }));
 
 // Serve static frontend dashboard assets
 app.use(express.static(path.join(__dirname, '../public')));

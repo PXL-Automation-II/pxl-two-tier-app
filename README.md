@@ -12,25 +12,31 @@ Node.js Express web application and REST API for the PXL Automation II course ev
 
 ## Environment Variables
 
-| Variable      | Default                 | Description                                          |
-| :------------ | :---------------------- | :--------------------------------------------------- |
-| `PORT`        | `3000`                  | Port for the Express HTTP server                     |
-| `DB_HOST`     | `127.0.0.1`             | Hostname or private IP address of the MySQL database |
-| `DB_PORT`     | `3306`                  | Port for MySQL                                       |
-| `DB_USER`     | `pxluser`               | MySQL database user                                  |
-| `DB_PASSWORD` | `PxlSecurePassword123!` | Password for the MySQL user                          |
-| `DB_NAME`     | `pxldb`                 | Database name                                        |
+| Variable                | Default                  | Description                                             |
+| :---------------------- | :----------------------- | :------------------------------------------------------ |
+| `NODE_ENV`              | `development`            | Environment mode (`development`, `test`, `production`)  |
+| `PORT`                  | `3000`                   | Port for the Express HTTP server                        |
+| `CORS_ORIGIN`           | `*`                      | Allowed CORS origins                                    |
+| `DB_HOST`               | `127.0.0.1`              | Hostname or private IP address of the MySQL database    |
+| `DB_PORT`               | `3306`                   | Port for MySQL                                          |
+| `DB_USER`               | `pxluser`                | MySQL database user                                     |
+| `DB_PASSWORD`           | None (Required via .env) | Password for MySQL (strictly injected, never hardcoded) |
+| `DB_NAME`               | `pxldb`                  | Database name                                           |
+| `DB_CONNECT_TIMEOUT`    | `5000`                   | Database connection timeout in milliseconds             |
+| `HEALTH_CHECK_INTERVAL` | `10000`                  | Database health monitoring interval in milliseconds     |
 
 ## Endpoints
 
-| Method   | Endpoint            | Description                                                               |
-| :------- | :------------------ | :------------------------------------------------------------------------ |
-| `GET`    | `/`                 | Web dashboard                                                             |
-| `GET`    | `/health`           | Health check for ALB Target Groups                                        |
-| `GET`    | `/api/info`         | Server and database metadata (JSON)                                       |
-| `GET`    | `/api/contacts`     | List all contacts                                                         |
-| `POST`   | `/api/contacts`     | Create a contact (`{"name": "...", "email": "...", "department": "..."}`) |
-| `DELETE` | `/api/contacts/:id` | Delete a contact by ID                                                    |
+| Method   | Endpoint                | Description                                                               |
+| :------- | :---------------------- | :------------------------------------------------------------------------ |
+| `GET`    | `/`                     | Web dashboard                                                             |
+| `GET`    | `/health`               | Health check for ALB Target Groups                                        |
+| `GET`    | `/api/info`             | Server and database metadata (JSON)                                       |
+| `GET`    | `/api/diagnostics`      | Real-time database connectivity and configuration diagnostics             |
+| `POST`   | `/api/diagnostics/ping` | On-demand live connectivity probe and latency verification                |
+| `GET`    | `/api/contacts`         | List all contacts                                                         |
+| `POST`   | `/api/contacts`         | Create a contact (`{"name": "...", "email": "...", "department": "..."}`) |
+| `DELETE` | `/api/contacts/:id`     | Delete a contact by ID                                                    |
 
 ## Project Structure
 

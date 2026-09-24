@@ -1,5 +1,6 @@
 const os = require('os');
 const env = require('../config/env');
+const CONSTANTS = require('../config/constants');
 const contactService = require('../services/contactService');
 const { getCachedAwsMetadata } = require('../utils/imds');
 
@@ -15,8 +16,8 @@ function getServerMetadata() {
   }
 
   const awsMeta = getCachedAwsMetadata();
-  const totalMemMb = Math.round(os.totalmem() / 1024 / 1024);
-  const freeMemMb = Math.round(os.freemem() / 1024 / 1024);
+  const totalMemMb = Math.round(os.totalmem() / CONSTANTS.SYSTEM.BYTES_PER_MB);
+  const freeMemMb = Math.round(os.freemem() / CONSTANTS.SYSTEM.BYTES_PER_MB);
   const usedMemMb = Math.max(0, totalMemMb - freeMemMb);
   const usedMemPercent = totalMemMb > 0 ? Math.round((usedMemMb / totalMemMb) * 100) : 0;
 
@@ -25,7 +26,7 @@ function getServerMetadata() {
     instanceId: awsMeta.instanceId || os.hostname(),
     availabilityZone: awsMeta.availabilityZone,
     isAws: awsMeta.isAws,
-    ipAddresses: ipAddresses.length > 0 ? ipAddresses : ['127.0.0.1'],
+    ipAddresses: ipAddresses.length > 0 ? ipAddresses : [CONSTANTS.SYSTEM.DEFAULT_LOOPBACK_IP],
     uptimeSeconds: Math.floor(process.uptime()),
     nodeVersion: process.version,
     platform: `${os.type()} ${os.release()}`,

@@ -1,5 +1,6 @@
 const app = require('./src/app');
 const env = require('./src/config/env');
+const CONSTANTS = require('./src/config/constants');
 const { closePool } = require('./src/config/db');
 const contactService = require('./src/services/contactService');
 const { resolveAwsMetadata } = require('./src/utils/imds');
@@ -20,7 +21,7 @@ async function monitorDatabaseConnection() {
 }
 
 // Start HTTP Server
-server = app.listen(env.PORT, '0.0.0.0', () => {
+server = app.listen(env.PORT, CONSTANTS.SERVER.HOST, () => {
   logger.info(`PXL Two-Tier Web Application listening on port ${env.PORT}`);
   logger.info(`Environment: Database target ${env.DB_HOST}:${env.DB_PORT}/${env.DB_NAME}`);
 
@@ -48,11 +49,11 @@ async function gracefulShutdown(signal) {
     clearInterval(healthCheckTimer);
   }
 
-  // Force close after 10 seconds timeout
+  // Force close after shutdown timeout
   const forceExitTimer = setTimeout(() => {
     logger.error('Graceful shutdown timed out. Forcing termination.');
     process.exit(1);
-  }, 10000);
+  }, CONSTANTS.SERVER.SHUTDOWN_TIMEOUT_MS);
   forceExitTimer.unref();
 
   // Stop accepting new connections

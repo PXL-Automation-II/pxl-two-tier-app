@@ -1,4 +1,5 @@
 const contactService = require('../services/contactService');
+const CONSTANTS = require('../config/constants');
 const logger = require('../utils/logger');
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -25,8 +26,10 @@ async function addContact(req, res) {
       .status(400)
       .json({ error: 'Field "name" is required and must be a non-empty string' });
   }
-  if (name.trim().length > 100) {
-    return res.status(400).json({ error: 'Field "name" cannot exceed 100 characters' });
+  if (name.trim().length > CONSTANTS.CONTACTS.MAX_NAME_LENGTH) {
+    return res.status(400).json({
+      error: `Field "name" cannot exceed ${CONSTANTS.CONTACTS.MAX_NAME_LENGTH} characters`
+    });
   }
 
   if (!email || typeof email !== 'string' || !EMAIL_REGEX.test(email.trim())) {
@@ -34,13 +37,20 @@ async function addContact(req, res) {
       .status(400)
       .json({ error: 'Field "email" is required and must be a valid email address' });
   }
-  if (email.trim().length > 100) {
-    return res.status(400).json({ error: 'Field "email" cannot exceed 100 characters' });
+  if (email.trim().length > CONSTANTS.CONTACTS.MAX_EMAIL_LENGTH) {
+    return res.status(400).json({
+      error: `Field "email" cannot exceed ${CONSTANTS.CONTACTS.MAX_EMAIL_LENGTH} characters`
+    });
   }
 
-  const cleanDept = department && typeof department === 'string' ? department.trim() : 'General';
-  if (cleanDept.length > 100) {
-    return res.status(400).json({ error: 'Field "department" cannot exceed 100 characters' });
+  const cleanDept =
+    department && typeof department === 'string'
+      ? department.trim()
+      : CONSTANTS.CONTACTS.DEFAULT_DEPARTMENT;
+  if (cleanDept.length > CONSTANTS.CONTACTS.MAX_DEPARTMENT_LENGTH) {
+    return res.status(400).json({
+      error: `Field "department" cannot exceed ${CONSTANTS.CONTACTS.MAX_DEPARTMENT_LENGTH} characters`
+    });
   }
 
   try {

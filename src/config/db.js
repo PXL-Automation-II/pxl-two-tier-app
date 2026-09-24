@@ -1,5 +1,6 @@
 const mysql = require('mysql2/promise');
 const env = require('./env');
+const CONSTANTS = require('./constants');
 const logger = require('../utils/logger');
 
 let pool = null;
@@ -16,13 +17,13 @@ function getPool() {
       password: env.DB_PASSWORD,
       database: env.DB_NAME,
       waitForConnections: true,
-      connectionLimit: 10,
-      maxIdle: 10,
-      idleTimeout: 60000,
-      queueLimit: 0,
+      connectionLimit: CONSTANTS.DATABASE.POOL.CONNECTION_LIMIT,
+      maxIdle: CONSTANTS.DATABASE.POOL.MAX_IDLE,
+      idleTimeout: CONSTANTS.DATABASE.POOL.IDLE_TIMEOUT_MS,
+      queueLimit: CONSTANTS.DATABASE.POOL.QUEUE_LIMIT,
       connectTimeout: env.DB_CONNECT_TIMEOUT,
       enableKeepAlive: true,
-      keepAliveInitialDelay: 10000
+      keepAliveInitialDelay: CONSTANTS.DATABASE.POOL.KEEP_ALIVE_INITIAL_DELAY_MS
     });
   }
   return pool;

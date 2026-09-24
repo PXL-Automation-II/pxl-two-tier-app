@@ -107,8 +107,9 @@ button.badge:focus-visible {
   outline-offset: 2px;
 }
 
-button.badge.checking {
-  opacity: 0.85;
+button.badge.checking,
+button.badge.badge-refreshing {
+  opacity: 0.9;
   cursor: wait;
 }
 
@@ -124,9 +125,10 @@ button.badge.checking {
   border: 1px solid var(--danger-border);
 }
 
-.badge-pending {
+.badge-pending,
+.badge-refreshing {
   background: var(--warning-bg);
-  color: #fbbf24;
+  color: #fb923c;
   border: 1px solid var(--warning-border);
 }
 

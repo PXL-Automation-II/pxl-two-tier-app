@@ -14,6 +14,15 @@ document.addEventListener('DOMContentLoaded', () => {
   const refreshBtn = document.getElementById('refreshBtn');
   const formError = document.getElementById('formError');
 
+  const CONFIG = {
+    POLL_INTERVAL_MS: 10000,
+    COPY_FEEDBACK_MS: 2000,
+    PLACEHOLDER: '-',
+    DEFAULT_AZ: 'local-dev',
+    DEFAULT_LOOPBACK: '127.0.0.1',
+    DEFAULT_REQUESTS_COUNT: 1
+  };
+
   // Diagnostics modal elements
   const debugModal = document.getElementById('debugModal');
   const closeDebugModalBtn = document.getElementById('closeDebugModalBtn');
@@ -91,15 +100,15 @@ document.addEventListener('DOMContentLoaded', () => {
       const data = await res.json();
 
       if (data.server) {
-        hostnameElem.textContent = data.server.hostname || 'Unknown';
+        hostnameElem.textContent = data.server.hostname || CONFIG.PLACEHOLDER;
         if (availabilityZoneElem) {
-          availabilityZoneElem.textContent = data.server.availabilityZone || 'local-dev';
+          availabilityZoneElem.textContent = data.server.availabilityZone || CONFIG.DEFAULT_AZ;
         }
         ipAddressElem.textContent = Array.isArray(data.server.ipAddresses)
           ? data.server.ipAddresses.join(', ')
-          : '127.0.0.1';
+          : CONFIG.DEFAULT_LOOPBACK;
         if (requestsServedElem) {
-          requestsServedElem.textContent = `${data.server.requestsServed || 1} reqs`;
+          requestsServedElem.textContent = `${data.server.requestsServed || CONFIG.DEFAULT_REQUESTS_COUNT} reqs`;
         }
         if (memoryUsageElem && data.server.memory) {
           memoryUsageElem.textContent = `RAM: ${data.server.memory.usedPercent}% (${data.server.memory.usedMb}MB)`;
@@ -109,12 +118,13 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       }
 
-      const dbHost = data.environment?.dbHost || data.database?.host || '127.0.0.1';
-      const dbPort = data.environment?.dbPort || data.database?.port || 3306;
-      const dbName = data.environment?.dbName || data.database?.name || 'pxldb';
-      const dbUser = data.environment?.dbUser || data.database?.user || 'pxluser';
+      const dbHost = data.environment?.dbHost || data.database?.host || CONFIG.PLACEHOLDER;
+      const dbPort = data.environment?.dbPort || data.database?.port || CONFIG.PLACEHOLDER;
+      const dbName = data.environment?.dbName || data.database?.name || CONFIG.PLACEHOLDER;
+      const dbUser = data.environment?.dbUser || data.database?.user || CONFIG.PLACEHOLDER;
 
-      dbEndpointElem.textContent = `${dbHost}:${dbPort}`;
+      dbEndpointElem.textContent =
+        dbHost !== CONFIG.PLACEHOLDER ? `${dbHost}:${dbPort}` : CONFIG.PLACEHOLDER;
 
       const dbVer = data.database?.version ? ` (MySQL ${data.database.version})` : '';
       const dbRows =
@@ -172,10 +182,10 @@ document.addEventListener('DOMContentLoaded', () => {
         error: 'Network request to /api/info failed',
         errorCode: 'ERR_FETCH_FAILED',
         target: {
-          host: '127.0.0.1',
-          port: 3306,
-          database: 'pxldb',
-          user: 'pxluser'
+          host: CONFIG.PLACEHOLDER,
+          port: CONFIG.PLACEHOLDER,
+          database: CONFIG.PLACEHOLDER,
+          user: CONFIG.PLACEHOLDER
         }
       };
     }
@@ -326,8 +336,9 @@ document.addEventListener('DOMContentLoaded', () => {
   async function checkLiveDatabaseConnection() {
     if (isCheckingLiveStatus) return latestDbDiagnostics;
     isCheckingLiveStatus = true;
-    dbBadge.classList.add('checking');
-    dbBadgeText.textContent = 'Database: Checking...';
+    dbBadge.className = 'badge badge-refreshing';
+    dbBadgeText.textContent = 'Refreshing...';
+    dbBadge.title = 'Refreshing database connection status...';
 
     try {
       const res = await fetch('/api/diagnostics/ping', { method: 'POST' });
@@ -366,7 +377,6 @@ document.addEventListener('DOMContentLoaded', () => {
       return latestDbDiagnostics;
     } finally {
       isCheckingLiveStatus = false;
-      dbBadge.classList.remove('checking');
     }
   }
 
@@ -442,7 +452,7 @@ document.addEventListener('DOMContentLoaded', () => {
         copyDiagBtn.textContent = 'Copied!';
         setTimeout(() => {
           copyDiagBtn.textContent = originalText;
-        }, 2000);
+        }, CONFIG.COPY_FEEDBACK_MS);
       } catch {
         alert('Failed to copy diagnostics to clipboard');
       }
@@ -454,5 +464,5 @@ document.addEventListener('DOMContentLoaded', () => {
   fetchContacts();
 
   // Periodic polling for live updates
-  setInterval(fetchServerInfo, 10000);
+  setInterval(fetchServerInfo, CONFIG.POLL_INTERVAL_MS);
 });
