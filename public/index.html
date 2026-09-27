@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PXL Automation II - Two-Tier Cloud Dashboard</title>
+    <link rel="stylesheet" href="/css/style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <div class="brand">
+          <h1>PXL Automation II - Two-Tier Cloud Dashboard</h1>
+          <p>Declarative Infrastructure as Code Deployment</p>
+        </div>
+        <div>
+          <button
+            id="dbBadge"
+            class="badge badge-refreshing"
+            type="button"
+            aria-haspopup="dialog"
+            aria-expanded="false"
+            title="Checking database connection..."
+          >
+            <span class="badge-dot"></span>
+            <span id="dbBadgeText">Refreshing...</span>
+          </button>
+        </div>
+      </header>
+
+      <div id="mainDashboardView">
+        <div class="grid">
+          <div class="card">
+            <div class="card-title">Instance Hostname</div>
+            <div class="card-value" id="hostname">Loading...</div>
+            <div class="card-subtitle">Serving EC2 Node</div>
+          </div>
+          <div class="card">
+            <div class="card-title">Availability Zone</div>
+            <div class="card-value" id="availabilityZone">Loading...</div>
+            <div class="card-subtitle">AWS Multi-AZ Placement</div>
+          </div>
+          <div class="card">
+            <div class="card-title">Private IP Address</div>
+            <div class="card-value" id="ipAddress">Loading...</div>
+            <div class="card-subtitle">Internal Subnet IP</div>
+          </div>
+          <div class="card">
+            <div class="card-title">Traffic Handled</div>
+            <div class="card-value" id="requestsServed">Loading...</div>
+            <div class="card-subtitle">Load Balancer Requests</div>
+          </div>
+          <div class="card">
+            <div class="card-title">Database Target</div>
+            <div class="card-value" id="dbEndpoint">Loading...</div>
+            <div class="card-subtitle" id="dbDatabaseName">Target DB</div>
+          </div>
+          <div class="card">
+            <div class="card-title">Server Resources</div>
+            <div class="card-value" id="memoryUsage">Loading...</div>
+            <div class="card-subtitle" id="uptime">Uptime</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="section-title">
+            <span>Persistent Database Records</span>
+            <button id="refreshBtn" class="btn btn-secondary">Refresh</button>
+          </div>
+
+          <form id="contactForm" class="form-group">
+            <input type="text" id="nameInput" placeholder="Full Name" maxlength="100" required />
+            <input
+              type="email"
+              id="emailInput"
+              placeholder="Email Address"
+              maxlength="100"
+              required
+            />
+            <input
+              type="text"
+              id="departmentInput"
+              placeholder="Department (e.g. Cloud Ops)"
+              maxlength="100"
+            />
+            <button type="submit" class="btn btn-primary">Add Record</button>
+          </form>
+
+          <div id="formError" class="form-error hidden"></div>
+
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Department</th>
+                <th>Created</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="contactsBody">
+              <tr>
+                <td colspan="6" class="text-center text-muted">Loading contacts...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div id="gameView" class="game-view hidden">
+        <div class="game-view-content">
+          <p class="game-message">
+            Database connection successful. Congrats!&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a
+              href="#"
+              id="gameLink"
+              class="game-link"
+              aria-label="game"
+              >.</a
+            >
+          </p>
+          <div id="gameBox" class="game-box hidden">
+            <iframe
+              id="gameFrame"
+              class="game-frame"
+              src="about:blank"
+              title="CoolCave Game"
+              tabindex="0"
+            ></iframe>
+          </div>
+          <div class="game-controls">
+            <button id="backBtn" class="btn btn-secondary" type="button">Back</button>
+          </div>
+        </div>
+      </div>
+
+      <footer>PXL Digital</footer>
+    </div>
+
+    <div
+      id="debugModal"
+      class="modal-overlay hidden"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="debugModalTitle"
+    >
+      <div class="modal-card">
+        <div class="modal-header">
+          <div>
+            <h2 id="debugModalTitle" class="modal-title">Database Connection Diagnostics</h2>
+            <p class="modal-subtitle">
+              Troubleshoot two-tier connectivity, security groups, and network state
+            </p>
+          </div>
+          <button
+            id="closeDebugModalBtn"
+            class="modal-close"
+            type="button"
+            aria-label="Close dialog"
+          >
+            &times;
+          </button>
+        </div>
+
+        <div class="modal-body">
+          <div class="diag-banner diag-banner-error" id="diagBanner">
+            <div class="diag-banner-header">
+              <span class="diag-badge" id="diagErrorCode">DISCONNECTED</span>
+              <span class="diag-timestamp" id="diagTimestamp">Last checked: Loading...</span>
+            </div>
+            <div class="diag-message" id="diagErrorMessage">
+              Unable to reach MySQL database service.
+            </div>
+          </div>
+
+          <div class="diag-section-title">Configured Connection Parameters</div>
+          <div class="diag-grid">
+            <div class="diag-card">
+              <div class="diag-card-label">Target Host</div>
+              <div class="diag-card-value" id="diagHost">-</div>
+            </div>
+            <div class="diag-card">
+              <div class="diag-card-label">Target Port</div>
+              <div class="diag-card-value" id="diagPort">-</div>
+            </div>
+            <div class="diag-card">
+              <div class="diag-card-label">Database Name</div>
+              <div class="diag-card-value" id="diagDbName">-</div>
+            </div>
+            <div class="diag-card">
+              <div class="diag-card-label">Database User</div>
+              <div class="diag-card-value" id="diagUser">-</div>
+            </div>
+          </div>
+
+          <div class="diag-section-title">Recommended Troubleshooting Steps</div>
+          <div class="diag-checklist" id="diagChecklist">
+            <div class="diag-step">
+              <span class="diag-step-num">1</span>
+              <div>
+                <strong>AWS Security Group Rules:</strong> Ensure the RDS Security Group allows
+                inbound TCP traffic on the database port from the EC2 Web Security Group (check
+                aws_security_group_rule).
+              </div>
+            </div>
+            <div class="diag-step">
+              <span class="diag-step-num">2</span>
+              <div>
+                <strong>VPC Subnet Routing:</strong> Verify that RDS is placed in the private
+                database subnet group of the same VPC and that route tables are configured
+                correctly.
+              </div>
+            </div>
+            <div class="diag-step">
+              <span class="diag-step-num">3</span>
+              <div>
+                <strong>Credentials &amp; Variables:</strong> Check terraform.tfvars or environment
+                variables to verify DB_USER and DB_PASSWORD match the RDS master user credentials.
+              </div>
+            </div>
+            <div class="diag-step">
+              <span class="diag-step-num">4</span>
+              <div>
+                <strong>Local Development (Docker):</strong> If testing locally, ensure the MySQL
+                container is running (docker ps) and the database port is mapped to the host.
+              </div>
+            </div>
+          </div>
+
+          <div class="diag-section-title">Raw Diagnostic Output</div>
+          <pre class="diag-raw" id="diagRaw">Loading...</pre>
+        </div>
+
+        <div class="modal-footer">
+          <button id="retryPingBtn" class="btn btn-primary" type="button">Test Connection</button>
+          <button id="copyDiagBtn" class="btn btn-secondary" type="button">Copy Diagnostics</button>
+          <button id="dismissDebugModalBtn" class="btn btn-secondary" type="button">Close</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="/js/app.js"></script>
+  </body>
+</html>
