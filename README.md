@@ -1,14 +1,27 @@
 # PXL Two-Tier Cloud Web Application
 
-Node.js Express web application and REST API for the PXL Automation II course evaluation (PE1). The application connects to a MySQL database, initializes its table schema, and provides an HTML dashboard and JSON API endpoints.
+Node.js Express web application and REST API.
+
+The application connects to a MySQL database, initializes its table schema, and provides an HTML dashboard and JSON API endpoints.
 
 ## Features
 
 - Web Dashboard (`GET /`): HTML interface displaying server metadata (hostname, private IP, uptime) and database connection status with round-trip latency.
-- Health Check (`GET /health`): JSON endpoint returning HTTP 200 when healthy or HTTP 503 when degraded. Used for AWS Application Load Balancer Target Group health checks.
+- Health Check (`GET /health`): JSON endpoint returning HTTP 200 when healthy or HTTP 503 when degraded.
 - REST API (`/api/contacts`): Endpoints for reading, creating, and deleting records from MySQL.
 - Connection Retry: Retries connecting to MySQL on startup if the database server is still initializing.
 - Schema Initialization: Creates the `contacts` table and seeds default rows on first connection.
+
+---
+
+## Project Structure
+
+- `public/`: Web dashboard frontend assets (HTML, CSS, JavaScript)
+- `src/`: Express application (controllers, routes, services, config)
+- `tests/`: Automated test suites (unit, integration, e2e)
+- `server.js`: Server lifecycle and HTTP entrypoint
+
+---
 
 ## Environment Variables
 
@@ -25,6 +38,8 @@ Node.js Express web application and REST API for the PXL Automation II course ev
 | `DB_CONNECT_TIMEOUT`    | `5000`                   | Database connection timeout in milliseconds             |
 | `HEALTH_CHECK_INTERVAL` | `10000`                  | Database health monitoring interval in milliseconds     |
 
+---
+
 ## Endpoints & Observability
 
 | Method   | Endpoint                | Purpose                                                                   | Status Codes  |
@@ -40,12 +55,7 @@ Node.js Express web application and REST API for the PXL Automation II course ev
 | `POST`   | `/api/contacts`         | Create a contact (`{"name": "...", "email": "...", "department": "..."}`) | 201, 400, 503 |
 | `DELETE` | `/api/contacts/:id`     | Delete a contact by ID                                                    | 200, 404, 503 |
 
-## Project Structure
-
-- `public/`: Web dashboard frontend assets (HTML, CSS, JavaScript)
-- `src/`: Express application (controllers, routes, services, config)
-- `tests/`: Automated test suites (unit, integration, e2e)
-- `server.js`: Server lifecycle and HTTP entrypoint
+---
 
 ## Available npm Scripts
 
@@ -65,6 +75,8 @@ Node.js Express web application and REST API for the PXL Automation II course ev
 | `npm run format:check`     | Verifies code conforms to Prettier style rules                 |
 | `npm run db:check`         | CLI diagnostic tool testing TCP and MySQL connectivity         |
 | `npm run ci`               | Full pipeline check (lint, format verification, and all tests) |
+
+---
 
 ## Local Usage
 
